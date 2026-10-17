@@ -1,0 +1,329 @@
+{
+ "version": 1,
+ "brands": {
+  "eman-channel": {
+   "colors": [
+    {
+     "name": "Magenta",
+     "hex": "#d91c5c"
+    },
+    {
+     "name": "Orange",
+     "hex": "#f04036"
+    },
+    {
+     "name": "Purple",
+     "hex": "#4d0554"
+    }
+   ],
+   "fonts": "Headlines, titles and callouts: Public Sans (ExtraBold for headings)\nBody copy and captions: Mulish",
+   "rules": [
+    "Use the magenta-to-orange gradient logo; solid magenta or orange is fine for specific uses",
+    "Black or white logo only when colour isn’t possible or for clarity on complex backgrounds",
+    "Clear space around the logo equal to the height of the ‘E’; never smaller than 70px digital / 23mm print",
+    "Logo top right by preference (top centre, top left or bottom right also allowed); avoid busy or low-contrast areas",
+    "Never stretch, rotate, outline, recolour or add shadows/effects to the logo",
+    "Brand colours: magenta #D91C5C, orange #F04036, purple #4D0554 (gradients and tints allowed)",
+    "Headlines in Public Sans, body text in Mulish",
+    "Photography and video: real people, natural light, minimal retouching",
+    "No ManyChat keyword prompts in captions",
+    "Scholar clips: hook text on screen from second zero, no static hook card",
+    "Arabic terms, hadith and Quran references checked for authenticity",
+    "Story Reels avoid culture-specific terms like Ammi or beta",
+    "Fits the 1 post per day cadence on the calendar"
+   ]
+  },
+  "eman-legacy": {
+   "colors": [
+    {
+     "name": "Teal",
+     "hex": "#1abd9c"
+    },
+    {
+     "name": "Blue",
+     "hex": "#3399db"
+    },
+    {
+     "name": "Navy",
+     "hex": "#171e46"
+    }
+   ],
+   "fonts": "Headlines, titles and callouts: Public Sans (ExtraBold for headings)\nBody copy and captions: Mulish",
+   "rules": [
+    "Use the teal-to-blue gradient logo; solid teal or blue is fine for specific uses",
+    "Black or white logo only when colour isn’t possible or for clarity on complex backgrounds",
+    "Clear space around the logo equal to the height of the ‘e’; never smaller than 70px digital / 23mm print",
+    "Logo top right by preference (top centre, top left or bottom right also allowed); avoid busy or low-contrast areas",
+    "Never stretch, rotate, outline, recolour or add shadows/effects to the logo",
+    "Brand colours: teal #1ABD9C and blue #3399DB (solid or gradient), navy #171E46 as the secondary base",
+    "Headlines in Public Sans, body text in Mulish",
+    "Photography and video: real people, natural light, minimal retouching"
+   ]
+  },
+  "light-upon-light": {
+   "colors": [
+    {
+     "name": "Dark Gray",
+     "hex": "#333333"
+    },
+    {
+     "name": "Gold",
+     "hex": "#c1ab75"
+    },
+    {
+     "name": "Very Light Gray",
+     "hex": "#d6d6d6"
+    }
+   ],
+   "fonts": "Primary and headlines: Poppins\nDisplay accents: Anton SC, Damion\nAlternative: Belleza",
+   "rules": [
+    "Logo never smaller than 2 cm wide",
+    "Keep clear space around the logo (based on the ‘X’ unit in the guideline)",
+    "Place the logo only on plain white, a solid brand colour, a light photo or a dark background with good contrast",
+    "Never stretch, rotate, outline or recolour the logo outside the brand palette",
+    "Brand colours: dark gray #333333 (primary), gold #C1AB75, very light gray #D6D6D6",
+    "Headlines in Poppins; Anton SC and Damion for display accents",
+    "Partner strips on posts and banners: Media partner, Charity partner, Event partner"
+   ]
+  },
+  "eman-academy": {
+   "colors": [
+    {
+     "name": "Green",
+     "hex": "#009245"
+    },
+    {
+     "name": "Lime",
+     "hex": "#8cc63f"
+    }
+   ],
+   "fonts": "",
+   "rules": [
+    "Use only the official logo files from this brand kit (full colour, black or white)",
+    "Colours taken from the official logo; full brand guidelines still to come"
+   ]
+  },
+  "eman-development": {
+   "colors": [
+    {
+     "name": "Purple",
+     "hex": "#662d91"
+    },
+    {
+     "name": "Magenta",
+     "hex": "#93278f"
+    }
+   ],
+   "fonts": "",
+   "rules": [
+    "Use only the official logo files from this brand kit (full colour, black or white)",
+    "Colours taken from the official logo; full brand guidelines still to come"
+   ]
+  }
+ },
+ "files": [
+  {
+   "brand": "eman-channel",
+   "cat": "Logo",
+   "name": "eman_channel_logo_full_color_cmyk.pdf",
+   "path": "brand/eman-channel/eman_channel_logo_full_color_cmyk.pdf",
+   "type": "application/pdf"
+  },
+  {
+   "brand": "eman-channel",
+   "cat": "Logo",
+   "name": "eman_channel_logo_full_color_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-channel/eman_channel_logo_full_color_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-channel",
+   "cat": "Logo",
+   "name": "eman_channel_logo_full_color_rgb.svg",
+   "path": "brand/eman-channel/eman_channel_logo_full_color_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-channel",
+   "cat": "Logo",
+   "name": "eman_channel_logo_black_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-channel/eman_channel_logo_black_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-channel",
+   "cat": "Logo",
+   "name": "eman_channel_logo_black_rgb.svg",
+   "path": "brand/eman-channel/eman_channel_logo_black_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-channel",
+   "cat": "Logo",
+   "name": "eman_channel_logo_white_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-channel/eman_channel_logo_white_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-channel",
+   "cat": "Logo",
+   "name": "eman_channel_logo_white_rgb.svg",
+   "path": "brand/eman-channel/eman_channel_logo_white_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-legacy",
+   "cat": "Logo",
+   "name": "eman_legacy_logo_full_color_cmyk.pdf",
+   "path": "brand/eman-legacy/eman_legacy_logo_full_color_cmyk.pdf",
+   "type": "application/pdf"
+  },
+  {
+   "brand": "eman-legacy",
+   "cat": "Logo",
+   "name": "eman_legacy_logo_full_color_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-legacy/eman_legacy_logo_full_color_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-legacy",
+   "cat": "Logo",
+   "name": "eman_legacy_logo_full_color_rgb.svg",
+   "path": "brand/eman-legacy/eman_legacy_logo_full_color_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-legacy",
+   "cat": "Logo",
+   "name": "eman_legacy_logo_black_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-legacy/eman_legacy_logo_black_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-legacy",
+   "cat": "Logo",
+   "name": "eman_legacy_logo_black_rgb.svg",
+   "path": "brand/eman-legacy/eman_legacy_logo_black_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-legacy",
+   "cat": "Logo",
+   "name": "eman_legacy_logo_white_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-legacy/eman_legacy_logo_white_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-legacy",
+   "cat": "Logo",
+   "name": "eman_legacy_logo_white_rgb.svg",
+   "path": "brand/eman-legacy/eman_legacy_logo_white_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-academy",
+   "cat": "Logo",
+   "name": "eman_academy_logo_full_color_cmyk.pdf",
+   "path": "brand/eman-academy/eman_academy_logo_full_color_cmyk.pdf",
+   "type": "application/pdf"
+  },
+  {
+   "brand": "eman-academy",
+   "cat": "Logo",
+   "name": "eman_academy_logo_full_color_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-academy/eman_academy_logo_full_color_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-academy",
+   "cat": "Logo",
+   "name": "eman_academy_logo_full_color_rgb.svg",
+   "path": "brand/eman-academy/eman_academy_logo_full_color_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-academy",
+   "cat": "Logo",
+   "name": "eman_academy_logo_black_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-academy/eman_academy_logo_black_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-academy",
+   "cat": "Logo",
+   "name": "eman_academy_logo_black_rgb.svg",
+   "path": "brand/eman-academy/eman_academy_logo_black_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-academy",
+   "cat": "Logo",
+   "name": "eman_academy_logo_white_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-academy/eman_academy_logo_white_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-academy",
+   "cat": "Logo",
+   "name": "eman_academy_logo_white_rgb.svg",
+   "path": "brand/eman-academy/eman_academy_logo_white_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-development",
+   "cat": "Logo",
+   "name": "eman_dp_logo_full_color_cmyk.pdf",
+   "path": "brand/eman-development/eman_dp_logo_full_color_cmyk.pdf",
+   "type": "application/pdf"
+  },
+  {
+   "brand": "eman-development",
+   "cat": "Logo",
+   "name": "eman_dp_logo_full_color_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-development/eman_dp_logo_full_color_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-development",
+   "cat": "Logo",
+   "name": "eman_dp_logo_full_color_rgb.svg",
+   "path": "brand/eman-development/eman_dp_logo_full_color_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-development",
+   "cat": "Logo",
+   "name": "eman_dp_logo_black_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-development/eman_dp_logo_black_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-development",
+   "cat": "Logo",
+   "name": "eman_dp_logo_black_rgb.svg",
+   "path": "brand/eman-development/eman_dp_logo_black_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "eman-development",
+   "cat": "Logo",
+   "name": "eman_dp_logo_white_rgb_1200px_w_72ppi.png",
+   "path": "brand/eman-development/eman_dp_logo_white_rgb_1200px_w_72ppi.png",
+   "type": "image/png"
+  },
+  {
+   "brand": "eman-development",
+   "cat": "Logo",
+   "name": "eman_dp_logo_white_rgb.svg",
+   "path": "brand/eman-development/eman_dp_logo_white_rgb.svg",
+   "type": "image/svg+xml"
+  },
+  {
+   "brand": "light-upon-light",
+   "cat": "Logo",
+   "name": "light_upon_light_global_logo_gold.png",
+   "path": "brand/light-upon-light/light_upon_light_global_logo_gold.png",
+   "type": "image/png"
+  }
+ ]
+}

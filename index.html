@@ -815,8 +815,10 @@ const parseColors=t=>String(t||'').split('\n').map(l=>{const m=l.match(/#([0-9a-
 VIEWS.kit=()=>{
   const b=S.kitBrand, bd=S.brands[b]||{}, man=canManage();
   const colors=bd.colors||[], fonts=bd.fonts||'', rules=bd.rules||[];
-  const files=S.kit.filter(k=>k.brand===b).sort((x,y)=>(y.at||0)-(x.at||0));
-  const fileCard=k=>{const src=k.fileId?blobUrl(k.fileId):'';const img=k.fileId&&(k.type||'').startsWith('image/');
+  const files=[...(S.staticKit||[]).filter(k=>k.brand===b).map(k=>({...k,id:'s:'+k.path,static:true})),...S.kit.filter(k=>k.brand===b).sort((x,y)=>(y.at||0)-(x.at||0))];
+  const fileCard=k=>{ if(k.static){const img=(k.type||'').startsWith('image/');const dark=/white/i.test(k.name);
+      return `<div class="kf">${img?`<img src="${esc(k.path)}" alt="${esc(k.name)}" loading="lazy"${dark?' style="background:#1b1821"':''}>`:`<span class="kx">${esc(k.name.split('.').pop().toUpperCase())}</span>`}<b>${esc(k.name)}</b><div class="row" style="gap:6px"><a class="btn small" href="${esc(k.path)}" download="${esc(k.name)}">Download</a></div></div>`}
+    const src=k.fileId?blobUrl(k.fileId):'';const img=k.fileId&&(k.type||'').startsWith('image/');
     return `<div class="kf">${img?`<img src="${src}" alt="${esc(k.name)}" loading="lazy">`:`<span class="kx">${k.url?'LINK':esc((k.name.split('.').pop()||'FILE').toUpperCase().slice(0,5))}</span>`}
      <b>${esc(k.name)}</b><div class="row" style="gap:6px">${k.fileId?(dlNS?`<button class="btn small" data-act="dlkit" data-id="${esc(k.id)}">Download</button>`:`<a class="btn small" href="${src}" target="_blank" rel="noopener">Open</a>`):''}${k.url&&/^https?:\/\//.test(k.url)?`<a class="btn small" href="${esc(k.url)}" target="_blank" rel="noopener">Open link</a>`:''}
      ${man?(S.open['rmk.'+k.id]?`<button class="btn small danger" data-act="rmkit" data-id="${esc(k.id)}">Remove</button>`:`<button class="btn ghost small danger" data-act="toggle" data-k="rmk.${esc(k.id)}">Remove</button>`):''}</div></div>`};
@@ -1250,6 +1252,13 @@ document.getElementById('f-setup').addEventListener('submit',async e=>{e.prevent
 /* ---------- boot ---------- */
 function defaultView(){const saved=store.get('emd.view');const ids=tabsList().map(t=>t[0]);return ids.includes(saved)?saved:ids[0]}
 function sub(col,key,mapFn){db.collection(col).onSnapshot(s=>{S[key]=mapFn(s.docs);render()},()=>{})}
+let kitImporting=false;
+async function loadStaticKit(){try{const r=await fetch('brand/brand-kit.json?v='+Date.now());if(r.ok){S.kitJson=await r.json();S.staticKit=S.kitJson.files||[];render()}}catch{}}
+async function importBrandKit(){
+  const k=S.kitJson; if(!k||kitImporting||!S.me.isOwner&&!(S.me.canEdit&&!restricted()))return;
+  const todo=Object.entries(k.brands||{}).filter(([b])=>(S.brands[b]?.kitVersion||0)<k.version); if(!todo.length)return;
+  kitImporting=true;
+  try{for(const [b,d] of todo){await db.collection('brands').doc(b).set({...(S.brands[b]||{}),colors:d.colors,fonts:d.fonts,rules:d.rules,kitVersion:k.version,updatedAt:Date.now()})}toast('Brand kit updated from the brand guidelines')}catch{} finally{kitImporting=false}}
 async function startApp(){
   const {data:{user:u}}=await sb.auth.getUser(); if(!u){showAuth();return}
   const {data:prof}=await sb.from('profiles').select('data').eq('id',u.id).maybeSingle();
@@ -1261,6 +1270,7 @@ async function startApp(){
   if(p.name&&!store.get('emd.name'))store.set('emd.name',p.name);
   db=makeDb(); assetsNS=S.me.canEdit?storageNS:null; dlNS=saveNS;
   S.view=defaultView(); render(); setTimeout(()=>{S.ready=true;render()},2000);
+  await loadStaticKit();
   db.collection('inbox').onSnapshot(sn=>{S.inbox=sn.docs.map(x=>({id:x.id,...x.data()}));render();reconcile()},()=>{});
   db.collection('items').onSnapshot(sn=>{S.items=sn.docs.map(x=>({id:x.id,...x.data()}));render();reconcile();if(S.drawer?.id)renderDeliv()},()=>{});
   db.collection('approvals').onSnapshot(sn=>{S.approvals={};sn.docs.forEach(x=>S.approvals[x.id]=x.data());render();if(S.drawer?.id)renderDeliv()},()=>{});
@@ -1271,7 +1281,7 @@ async function startApp(){
   sub('ideas','ideas',d=>d.map(x=>({id:x.id,...x.data()})));
   sub('invites','invites',d=>d.map(x=>({id:x.id,...x.data()})));
   sub('profiles','profiles',d=>d.map(x=>({id:x.id,...x.data()})));
-  db.collection('brands').onSnapshot(s=>{S.brands={};s.docs.forEach(x=>S.brands[x.id]=x.data());render()},()=>{});
+  db.collection('brands').onSnapshot(s=>{S.brands={};s.docs.forEach(x=>S.brands[x.id]=x.data());render();importBrandKit()},()=>{});
 }
 (async()=>{
   if(!CFG.supabaseUrl||!CFG.supabaseAnonKey||!window.supabase){document.getElementById('auth').hidden=false;document.getElementById('auth-msg').textContent='The dashboard isn’t connected yet. Add your Supabase project URL and anon key to config.js.';return}
