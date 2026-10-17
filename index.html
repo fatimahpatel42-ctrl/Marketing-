@@ -651,6 +651,8 @@ const nf=n=>n==null?'—':Number(n).toLocaleString();
 const slotDoc=(sid,d)=>`${sid}--${d}`;
 const dayLabel=d=>!d?.length?'No days set':d.length===7?'Every day':d.slice().sort().map(i=>DAYN[i]).join(', ');
 function brandChips(act,cur){return `<div class="bchips">${BRANDS.map(e=>`<button class="bchip" data-act="${act}" data-v="${e.id}" aria-pressed="${cur===e.id}" aria-label="${esc(e.name)}">${logo(e.id,26)}</button>`).join('')}</div>`}
+const BRAND_PLATFORMS={'eman-channel':['Instagram','Facebook','YouTube'],'light-upon-light':['Instagram','TikTok','YouTube'],'eman-legacy':['Instagram']};
+const defPlats=b=>BRAND_PLATFORMS[b]||['Instagram','Facebook'];
 const platsOf=i=>i.type==='email'?['Email']:i.type==='sms'?['SMS']:(i.platforms&&i.platforms.length?i.platforms:['Instagram']).filter(p=>p!=='Print');
 const allSched=i=>platsOf(i).every(p=>i.sched&&i.sched[p]);
 const toSchedule=()=>S.items.filter(i=>i.stage==='scheduled'&&isSocial(i)&&!allSched(i));
@@ -946,7 +948,8 @@ Requirements:
 }
 /* ---------- drawer ---------- */
 function openDrawer(id,preset={}){
-  const it=id?S.items.find(i=>i.id===id):{title:'',brand:S.brand!=='all'?S.brand:'eman-channel',type:'post',stage:'briefed',priority:'Normal',owner:'',due:'',publishDate:'',platforms:['Instagram'],message:'',assets:'',notes:'',checks:{},...preset};
+  const _nb=preset.brand||(S.brand!=='all'?S.brand:'eman-channel');
+  const it=id?S.items.find(i=>i.id===id):{title:'',brand:_nb,type:'post',stage:'briefed',priority:'Normal',owner:'',due:'',publishDate:'',platforms:defPlats(_nb),message:'',assets:'',notes:'',checks:{},...preset};
   if(!it)return; S.drawer={id,ideaId:preset._ideaId||null,newId:preset._docId||null,slotId:it.slotId||null,checks:{...(it.checks||{})},confirm:false,brand:it.brand};
   const slot=S.slots.find(x=>x.id===it.slotId);
   function seriesOpts(br,sel){return '<option value="">None</option>'+opts(S.slots.filter(x=>x.brand===br),sel||'')}
@@ -988,7 +991,7 @@ function openDrawer(id,preset={}){
      ${id&&!restricted()?`<span id="d-del"><button type="button" class="btn ghost danger small" data-act="askdel">Delete</button></span>`:''}</div>
   </form></div>`;
   function rulesBox(b){const r=rules(b);return r.length?`<div class="rules"><span class="lbl">${esc(ent(b).name)} checklist</span>${r.map((x,ix)=>`<label><input type="checkbox" data-rule="${ix}" ${S.drawer.checks[ix]?'checked':''}> ${esc(x)}</label>`).join('')}</div>`:''}
-  el.querySelector('#d-brand').addEventListener('change',e=>{S.drawer.checks={};el.querySelector('#d-rules').innerHTML=rulesBox(e.target.value);el.querySelector('#d-series').innerHTML=seriesOpts(e.target.value,'')});
+  el.querySelector('#d-brand').addEventListener('change',e=>{if(!id){const dp=defPlats(e.target.value);el.querySelectorAll('input[name=d-plat]').forEach(c=>c.checked=dp.includes(c.value))}S.drawer.checks={};el.querySelector('#d-rules').innerHTML=rulesBox(e.target.value);el.querySelector('#d-series').innerHTML=seriesOpts(e.target.value,'')});
   const msgUI=()=>{const t=el.querySelector('#d-type').value;el.querySelector('#d-msgf').hidden=!MSG.includes(t);el.querySelector('#d-emailf').hidden=t!=='email';el.querySelector('#d-smsf').hidden=t!=='sms';el.querySelector('#d-msgf-l').textContent=(t==='sms'?'SMS':'Mailshot')+' details';el.querySelectorAll('input[name=d-plat]').forEach(c=>c.closest('.f')&&(c.closest('.f').hidden=MSG.includes(t)))};
   const smsCount=()=>{const v=el.querySelector('#d-sms').value;const n=v.length;const parts=n<=160?1:Math.ceil(n/153);el.querySelector('#d-smsc').textContent=n?`${n} characters · ${parts} text${parts>1?'s':''} per person`:''};
   el.querySelector('#d-type').addEventListener('change',msgUI);el.querySelector('#d-sms').addEventListener('input',smsCount);msgUI();smsCount();
@@ -1118,7 +1121,7 @@ document.addEventListener('click',async e=>{
     try{await db.collection('kit').add({brand:S.kitBrand,cat:D('kit.cat','Logo'),name,url,at:Date.now()});S.drafts['kit.lname']='';S.drafts['kit.lurl']='';render();toast('Link added')}catch(err){writeErr(err)}}
   else if(a==='rmkit'){const k=S.kit.find(x=>x.id===id);try{if(k?.fileId&&assetsNS)await assetsNS.delete(k.fileId);await db.collection('kit').doc(id).delete();toast('Removed')}catch(err){toast('Couldn’t remove that file')}}
   else if(a==='dlkit'){const k=S.kit.find(x=>x.id===id);try{const bl=await await fetchBlob(k.fileId);await dlNS.save({filename:k.name,data:bl})}catch(err){if(err?.code==='rejected_extension')toast('This file type can’t be downloaded from here. Ask Fatimah for it.');else if(err?.code!=='declined')toast('Couldn’t download that file')}}
-  else if(a==='useidea'){const x=S.ideas.find(i=>i.id===id);openDrawer(null,{_ideaId:x.id,brand:x.brand,title:x.text.slice(0,90),message:x.text+(x.link?'\n'+x.link:''),stage:'briefed',platforms:['Instagram','Facebook']})}
+  else if(a==='useidea'){const x=S.ideas.find(i=>i.id===id);openDrawer(null,{_ideaId:x.id,brand:x.brand,title:x.text.slice(0,90),message:x.text+(x.link?'\n'+x.link:''),stage:'briefed',platforms:defPlats(x.brand)})}
   else if(a==='rmidea'){try{await db.collection('ideas').doc(id).delete();toast('Idea deleted')}catch(err){writeErr(err)}}
   else if(a==='capdraft'){draftCaption()}
   else if(a==='capstop'){capCtl?.abort()}
@@ -1148,7 +1151,7 @@ document.addEventListener('click',async e=>{
   else if(a==='planbrand'){S.planBrand=b.dataset.v;render()}
   else if(a==='inbrand'){S.inBrand=b.dataset.v;S.drafts['ins.brand']=b.dataset.v;render()}
   else if(a==='week'){const d=+b.dataset.d;S.week=d?addDays(S.week,d):mondayOf(today());render()}
-  else if(a==='addday'){const d=b.dataset.date,ty=b.dataset.type;openDrawer(null,{brand:S.planBrand,type:ty,publishDate:d,due:addDays(d,-1),stage:'briefed',platforms:MSG.includes(ty)?[]:['Instagram','Facebook']})}
+  else if(a==='addday'){const d=b.dataset.date,ty=b.dataset.type;openDrawer(null,{brand:S.planBrand,type:ty,publishDate:d,due:addDays(d,-1),stage:'briefed',platforms:MSG.includes(ty)?[]:defPlats(S.planBrand)})}
   else if(a==='planslot'){const sl=S.slots.find(x=>x.id===b.dataset.slot);const d=b.dataset.date;if(!sl)return;
     openDrawer(null,{_docId:slotDoc(sl.id,d),slotId:sl.id,brand:sl.brand,type:sl.type||'post',owner:sl.owner||'',platforms:sl.platforms||['Instagram'],publishDate:d,due:addDays(d,-1),title:sl.name+': ',stage:'briefed'})}
   else if(a==='saveslot'){const k=b.dataset.k,p='sl.'+k,s=S.slots.find(x=>x.id===k)||{};const name=String(dv(p+'.name',s.name||'')).trim();if(!name){toast('Give the series a name');return}
