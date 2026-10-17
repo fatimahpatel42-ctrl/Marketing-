@@ -203,8 +203,8 @@ table.plan td.off{background:repeating-linear-gradient(135deg,transparent 0 7px,
 .pday header .hint{margin-left:auto;font-size:.72rem}
 .plist{display:flex;flex-direction:column;gap:6px;flex:1}
 .plist .pc{min-height:0}
-.padd{display:flex;gap:6px}
-.padd .btn{flex:1;padding:6px 4px}
+.padd{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.padd .btn{padding:6px 2px;font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 
 .dv{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--surface-2)}
 .fr{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
@@ -377,9 +377,10 @@ input[type=password],input[type=number]{font:inherit;color:var(--fg);background:
 <script src="config.js?v=3"></script>
 <script>
 const ENTITIES=[{id:'eman-channel',name:'Eman Channel TV'},{id:'eman-legacy',name:'Eman Legacy'},{id:'light-upon-light',name:'Light Upon Light'},{id:'eman-development',name:'Eman Development Programme'},{id:'eman-academy',name:'Eman Academy'},{id:'eman-essentials',name:'Eman Academy Essentials'},{id:'other',name:'Other / outside client'}];
-const TYPES=[{id:'post',name:'Social post',lead:7},{id:'reel',name:'Reel / video',lead:10},{id:'campaign',name:'Event campaign',lead:21},{id:'graphic',name:'Print / graphic',lead:7},{id:'ad',name:'Paid ad',lead:7},{id:'copy',name:'Copy only',lead:4},{id:'video',name:'Video (not for social)',lead:10},{id:'doc',name:'Presentation / document',lead:7}];
-const SOCIAL=['post','reel','campaign','ad'];
-const TYPE_QS={post:['Text or quote to include','Reference or source (ayah, hadith, scholar)','Call to action'],
+const TYPES=[{id:'post',name:'Social post',lead:7},{id:'reel',name:'Reel / video',lead:10},{id:'campaign',name:'Event campaign',lead:21},{id:'graphic',name:'Print / graphic',lead:7},{id:'ad',name:'Paid ad',lead:7},{id:'copy',name:'Copy only',lead:4},{id:'video',name:'Video (not for social)',lead:10},{id:'doc',name:'Presentation / document',lead:7},{id:'email',name:'Mailshot (email)',lead:5},{id:'sms',name:'SMS',lead:3}];
+const SOCIAL=['post','reel','campaign','ad','email','sms'];
+const MSG=['email','sms'];
+const TYPE_QS={email:['Who should receive it (list or audience)','Subject line idea','Main link or call to action'],sms:['Who should receive it (list or audience)','Link to include (if any)'],post:['Text or quote to include','Reference or source (ayah, hadith, scholar)','Call to action'],
  reel:['Length (e.g. 30s, 60s)','Footage or clips available','Nasheed or audio preference','Text to show on screen'],
  campaign:['Event name','Event date and time','Venue and city','Speakers','Ticket link','Ticket prices','Booking deadline or early-bird offer'],
  graphic:['Size and format (e.g. A5 flyer, roll-up banner)','Quantity and where it will be printed','Text to include','Logos or partners to show'],
@@ -650,7 +651,7 @@ const nf=n=>n==null?'—':Number(n).toLocaleString();
 const slotDoc=(sid,d)=>`${sid}--${d}`;
 const dayLabel=d=>!d?.length?'No days set':d.length===7?'Every day':d.slice().sort().map(i=>DAYN[i]).join(', ');
 function brandChips(act,cur){return `<div class="bchips">${BRANDS.map(e=>`<button class="bchip" data-act="${act}" data-v="${e.id}" aria-pressed="${cur===e.id}" aria-label="${esc(e.name)}">${logo(e.id,26)}</button>`).join('')}</div>`}
-const platsOf=i=>(i.platforms&&i.platforms.length?i.platforms:['Instagram']).filter(p=>p!=='Print');
+const platsOf=i=>i.type==='email'?['Email']:i.type==='sms'?['SMS']:(i.platforms&&i.platforms.length?i.platforms:['Instagram']).filter(p=>p!=='Print');
 const allSched=i=>platsOf(i).every(p=>i.sched&&i.sched[p]);
 const toSchedule=()=>S.items.filter(i=>i.stage==='scheduled'&&isSocial(i)&&!allSched(i));
 function schedFlag(i){if(allSched(i))return '<span class="flag ok">Scheduled</span>';const d=daysUntil(i.publishDate);
@@ -670,11 +671,11 @@ VIEWS.plan=()=>{
   const series=S.slots.filter(s=>s.brand===b).sort((x,y)=>(x.createdAt||0)-(y.createdAt||0));
   const week=S.items.filter(i=>i.brand===b&&i.publishDate>=days[0]&&i.publishDate<=days[6]);
   const noOwner=week.filter(i=>!i.owner).length, posted=week.filter(i=>i.stage==='published').length, ready=week.filter(i=>i.stage==='scheduled').length;
-  const card=i=>{const se=S.slots.find(x=>x.id===i.slotId);return `<button class="pc" data-act="open" data-id="${esc(i.id)}"><span class="pm"><span class="flag">${esc(i.type==='reel'?'Reel':typ(i.type).name)}</span>${se?`<span class="flag">${esc(se.name)}</span>`:''}</span><span class="pt">${esc(i.title)}</span><span class="pm">${i.owner?`<span class="flag">${esc(memberName(i.owner)||'?')}</span>`:'<span class="flag warn">No owner</span>'}${stageFlag(i.stage,i)}${(i.files||[]).length?`<span class="flag">${i.files.length} file${i.files.length>1?'s':''}</span>`:''}</span></button>`};
+  const card=i=>{const se=S.slots.find(x=>x.id===i.slotId);return `<button class="pc" data-act="open" data-id="${esc(i.id)}"><span class="pm"><span class="flag">${esc(i.type==='reel'?'Reel':i.type==='email'?'Mailshot':i.type==='sms'?'SMS':typ(i.type).name)}</span>${se?`<span class="flag">${esc(se.name)}</span>`:''}</span><span class="pt">${esc(i.title)}</span><span class="pm">${i.owner?`<span class="flag">${esc(memberName(i.owner)||'?')}</span>`:'<span class="flag warn">No owner</span>'}${stageFlag(i.stage,i)}${(i.files||[]).length?`<span class="flag">${i.files.length} file${i.files.length>1?'s':''}</span>`:''}</span></button>`};
   const cols=days.map((d,i)=>{const list=week.filter(x=>x.publishDate===d).sort((x,y)=>(x.createdAt||0)-(y.createdAt||0));
     return `<section class="pday${d===t?' today':''}"><header><span class="lbl">${DAYN[i]}</span><b>${parse(d).getDate()}</b><span class="hint">${list.length?list.length+' planned':''}</span></header>
     <div class="plist">${list.map(card).join('')||`<p class="hint" style="margin:2px 0">${d<t?'Nothing was planned':'Nothing planned yet'}</p>`}</div>
-    <div class="padd"><button class="btn small" data-act="addday" data-date="${d}" data-type="post">+ Post</button><button class="btn small" data-act="addday" data-date="${d}" data-type="reel">+ Reel</button></div></section>`}).join('');
+    <div class="padd"><button class="btn small" data-act="addday" data-date="${d}" data-type="post">+ Post</button><button class="btn small" data-act="addday" data-date="${d}" data-type="reel">+ Reel</button><button class="btn small" data-act="addday" data-date="${d}" data-type="email">+ Mailshot</button><button class="btn small" data-act="addday" data-date="${d}" data-type="sms">+ SMS</button></div></section>`}).join('');
   const wkName=`${parse(wk).toLocaleDateString(undefined,{day:'numeric',month:'short'})} – ${parse(days[6]).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}`;
   return brandChips('planbrand',b)+`<div class="calhead"><div class="row" style="gap:14px">${logo(b,44)}<div><h2>Content plan</h2><p class="hint" style="margin:0">Week of ${wkName}</p></div></div><div class="row"><button class="btn small" data-act="week" data-d="-7">‹ Prev</button><button class="btn small" data-act="week" data-d="0">This week</button><button class="btn small" data-act="week" data-d="7">Next ›</button></div></div>
   <div class="strip"><div><span class="lbl">Planned this week</span><b>${week.length}</b></div><div class="${noOwner?'hot':''}"><span class="lbl">No owner</span><b>${noOwner}</b></div><div><span class="lbl">Scheduled</span><b>${ready}</b></div><div><span class="lbl">Posted</span><b>${posted}</b></div></div>
@@ -772,7 +773,7 @@ function postRow(i,mode){
    ${mode==='todo'||mode==='sched'?`<div class="row" style="gap:6px">${platsOf(i).map(p=>`<button class="pchip" data-act="sched" data-id="${esc(i.id)}" data-p="${esc(p)}" aria-pressed="${!!i.sched?.[p]}">${i.sched?.[p]?'✓ ':''}${esc(p)}</button>`).join('')}${mode==='todo'&&platsOf(i).length>1?`<button class="btn small primary" data-act="schedall" data-id="${esc(i.id)}">Mark all scheduled</button>`:''}</div>`:''}
    <div class="row" style="gap:6px">${dlNS?files.map(x=>`<button class="btn small" data-act="dlfile" data-item="${esc(i.id)}" data-f="${esc(x.id)}">Download ${esc(x.name.length>22?x.name.slice(0,20)+'…':x.name)}</button>`).join(''):''}
      ${i.deliveryLink&&/^https?:\/\//.test(i.deliveryLink)?`<a class="btn small" href="${esc(i.deliveryLink)}" target="_blank" rel="noopener">Open link</a>`:''}
-     ${i.notes?`<button class="btn small ghost" data-act="copycap" data-id="${esc(i.id)}">Copy caption</button>`:''}
+     ${(i.type==='sms'?i.smsText:i.type==='email'?(i.subject||i.notes):i.notes)?`<button class="btn small ghost" data-act="copycap" data-id="${esc(i.id)}">${i.type==='sms'?'Copy text message':i.type==='email'?'Copy subject & text':'Copy caption'}</button>`:''}${MSG.includes(i.type)&&i.audience?`<span class="hint">To: ${esc(i.audience)}</span>`:''}
      ${mode==='confirm'?`<button class="btn small primary" data-act="posted" data-id="${esc(i.id)}">It went out</button><button class="btn small ghost danger" data-act="unsched" data-id="${esc(i.id)}">It didn’t go out</button>`:''}</div></div></div>`;
 }
 VIEWS.posting=()=>{
@@ -966,6 +967,14 @@ function openDrawer(id,preset={}){
      ${it.goal?`<label class="f"><span>Goal</span><input id="d-goal" type="text" value="${esc(it.goal)}" readonly></label>`:''}
    </div>
    <div class="f"><span class="lbl">Platforms</span><div class="checks">${PLATFORMS.map(p=>`<label><input type="checkbox" name="d-plat" value="${p}" ${(it.platforms||[]).includes(p)?'checked':''}> ${p}</label>`).join('')}</div></div>
+   <div id="d-msgf" class="dv"${MSG.includes(it.type)?'':' hidden'}>
+     <span class="lbl" id="d-msgf-l">${it.type==='sms'?'SMS':'Mailshot'} details</span>
+     <label class="f"><span>Who receives it (list or audience)</span><input id="d-aud" type="text" value="${esc(it.audience||'')}" placeholder="e.g. All supporters, London ticket buyers"></label>
+     <div id="d-emailf"${it.type==='email'?'':' hidden'} class="list" style="gap:10px">
+       <label class="f"><span>Subject line</span><input id="d-subj" type="text" value="${esc(it.subject||'')}"></label>
+       <label class="f"><span>Preview text (shown after the subject in the inbox)</span><input id="d-pre" type="text" value="${esc(it.preheader||'')}"></label></div>
+     <div id="d-smsf"${it.type==='sms'?'':' hidden'}><label class="f"><span>Text message</span><textarea id="d-sms" maxlength="918" placeholder="Keep it short. Include the link and who it's from.">${esc(it.smsText||'')}</textarea></label><span class="hint" id="d-smsc"></span></div>
+   </div>
    <label class="f"><span>What goes in it: topic, script, scholar, clip, hook</span><textarea id="d-msg">${esc(it.message)}</textarea></label>
    ${(it.brief||[]).length?`<div class="dv"><span class="lbl">Brief from ${esc(ent(it.brand).name)}</span><dl class="bdl">${it.brief.map(x=>`<dt>${esc(x.q)}</dt><dd>${esc(x.a)}</dd>`).join('')}</dl></div>`:''}
    <label class="f"><span class="row" style="justify-content:space-between"><span>Caption, links and notes</span></span><textarea id="d-notes">${esc(it.notes)}</textarea></label>
@@ -980,6 +989,9 @@ function openDrawer(id,preset={}){
   </form></div>`;
   function rulesBox(b){const r=rules(b);return r.length?`<div class="rules"><span class="lbl">${esc(ent(b).name)} checklist</span>${r.map((x,ix)=>`<label><input type="checkbox" data-rule="${ix}" ${S.drawer.checks[ix]?'checked':''}> ${esc(x)}</label>`).join('')}</div>`:''}
   el.querySelector('#d-brand').addEventListener('change',e=>{S.drawer.checks={};el.querySelector('#d-rules').innerHTML=rulesBox(e.target.value);el.querySelector('#d-series').innerHTML=seriesOpts(e.target.value,'')});
+  const msgUI=()=>{const t=el.querySelector('#d-type').value;el.querySelector('#d-msgf').hidden=!MSG.includes(t);el.querySelector('#d-emailf').hidden=t!=='email';el.querySelector('#d-smsf').hidden=t!=='sms';el.querySelector('#d-msgf-l').textContent=(t==='sms'?'SMS':'Mailshot')+' details';el.querySelectorAll('input[name=d-plat]').forEach(c=>c.closest('.f')&&(c.closest('.f').hidden=MSG.includes(t)))};
+  const smsCount=()=>{const v=el.querySelector('#d-sms').value;const n=v.length;const parts=n<=160?1:Math.ceil(n/153);el.querySelector('#d-smsc').textContent=n?`${n} characters · ${parts} text${parts>1?'s':''} per person`:''};
+  el.querySelector('#d-type').addEventListener('change',msgUI);el.querySelector('#d-sms').addEventListener('input',smsCount);msgUI();smsCount();
   el.querySelector('#d-series').addEventListener('change',e=>{const se=S.slots.find(x=>x.id===e.target.value);const g=el.querySelector('#d-guide');
     if(se){el.querySelector('#d-type').value=se.type||'post';if(!el.querySelector('#d-owner').value&&se.owner)el.querySelector('#d-owner').value=se.owner;
       if(!id&&se.platforms?.length)el.querySelectorAll('input[name=d-plat]').forEach(c=>c.checked=se.platforms.includes(c.value));
@@ -1040,7 +1052,7 @@ async function saveDrawer(e){
   if(!v('d-title')){toast('Add a title first');return}
   if(LOCKED.includes(v('d-stage'))&&!S.me.isOwner&&v('d-stage')!==(S.items.find(i=>i.id===S.drawer.id)?.stage)&&!(v('d-stage')==='published'&&S.approvals[S.drawer.id])){toast('Only the approver can schedule or publish');return}
   const body={title:v('d-title'),brand:v('d-brand'),type:v('d-type'),stage:v('d-stage'),priority:v('d-pri'),owner:v('d-owner'),due:v('d-due'),publishDate:v('d-live'),
-    platforms:[...f.querySelectorAll('input[name=d-plat]:checked')].map(x=>x.value),message:v('d-msg'),notes:v('d-notes'),assets:v('d-assets'),checks:S.drawer.checks,slotId:v('d-series')||null,updatedAt:Date.now()};
+    platforms:[...f.querySelectorAll('input[name=d-plat]:checked')].map(x=>x.value),message:v('d-msg'),notes:v('d-notes'),audience:v('d-aud'),subject:v('d-subj'),preheader:v('d-pre'),smsText:v('d-sms'),assets:v('d-assets'),checks:S.drawer.checks,slotId:v('d-series')||null,updatedAt:Date.now()};
   try{ if(S.drawer.id) await db.collection('items').doc(S.drawer.id).update(body); else if(S.drawer.newId) await db.collection('items').doc(S.drawer.newId).set({...body,source:'plan',slotId:S.drawer.slotId,createdAt:Date.now()}); else {const ref=await db.collection('items').add({...body,source:S.drawer.ideaId?'idea':'team',createdAt:Date.now()}); if(S.drawer.ideaId)await db.collection('ideas').doc(S.drawer.ideaId).update({status:'used',itemId:ref.id,usedAt:Date.now()});}
     toast(S.drawer.id?'Saved':'Added to pipeline'); closeDrawer(); }catch(err){writeErr(err)}
 }
@@ -1085,7 +1097,7 @@ document.addEventListener('click',async e=>{
   else if(a==='posted'){try{await db.collection('items').doc(id).update({stage:'published',postedAt:Date.now(),updatedAt:Date.now()});toast('Marked as posted')}catch(err){writeErr(err)}}
   else if(a==='unsched'){const it=S.items.find(i=>i.id===id);const sc={};platsOf(it).forEach(p=>sc[p]=null);
     try{await db.collection('items').doc(id).update({sched:sc,updatedAt:Date.now()});toast('Moved back to To schedule. Set a new go-live date.');openDrawer(id)}catch(err){writeErr(err)}}
-  else if(a==='copycap'){const it=S.items.find(i=>i.id===id);try{await navigator.clipboard.writeText(it.notes||'');toast('Caption copied')}catch{openDrawer(id);setTimeout(()=>{const n=document.getElementById('d-notes');n?.focus();n?.select()},60);toast('Copy the caption from the notes field')}}
+  else if(a==='copycap'){const it=S.items.find(i=>i.id===id);const txt=it.type==='sms'?(it.smsText||''):it.type==='email'?[it.subject&&('Subject: '+it.subject),it.preheader&&('Preview: '+it.preheader),it.notes].filter(Boolean).join('\n\n'):(it.notes||'');try{await navigator.clipboard.writeText(txt);toast('Copied')}catch{openDrawer(id);setTimeout(()=>{const n=document.getElementById('d-notes');n?.focus();n?.select()},60);toast('Copy the caption from the notes field')}}
   else if(a==='cdecide'){const v=b.dataset.v;const note=v==='changes'?String(D('cchg.'+id,'')).trim():'';if(v==='changes'&&!note){toast('Say what needs changing');return}
     try{await db.collection('inbox').doc(id).update({clientDecision:v,clientNote:note,decisionAt:Date.now()});S.open['chg.'+id]=false;S.drafts['cchg.'+id]='';toast(v==='approved'?'Approved. Thank you!':'Changes sent to the team')}catch(err){writeErr(err)}}
   else if(a==='gobrand'){S.planBrand=S.inBrand=b.dataset.v;S.drafts['ins.brand']=b.dataset.v;S.view=b.dataset.to;render();window.scrollTo(0,0)}
@@ -1136,7 +1148,7 @@ document.addEventListener('click',async e=>{
   else if(a==='planbrand'){S.planBrand=b.dataset.v;render()}
   else if(a==='inbrand'){S.inBrand=b.dataset.v;S.drafts['ins.brand']=b.dataset.v;render()}
   else if(a==='week'){const d=+b.dataset.d;S.week=d?addDays(S.week,d):mondayOf(today());render()}
-  else if(a==='addday'){const d=b.dataset.date;openDrawer(null,{brand:S.planBrand,type:b.dataset.type,publishDate:d,due:addDays(d,-1),stage:'briefed',platforms:['Instagram','Facebook']})}
+  else if(a==='addday'){const d=b.dataset.date,ty=b.dataset.type;openDrawer(null,{brand:S.planBrand,type:ty,publishDate:d,due:addDays(d,-1),stage:'briefed',platforms:MSG.includes(ty)?[]:['Instagram','Facebook']})}
   else if(a==='planslot'){const sl=S.slots.find(x=>x.id===b.dataset.slot);const d=b.dataset.date;if(!sl)return;
     openDrawer(null,{_docId:slotDoc(sl.id,d),slotId:sl.id,brand:sl.brand,type:sl.type||'post',owner:sl.owner||'',platforms:sl.platforms||['Instagram'],publishDate:d,due:addDays(d,-1),title:sl.name+': ',stage:'briefed'})}
   else if(a==='saveslot'){const k=b.dataset.k,p='sl.'+k,s=S.slots.find(x=>x.id===k)||{};const name=String(dv(p+'.name',s.name||'')).trim();if(!name){toast('Give the series a name');return}
